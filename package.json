@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc && robocopy prisma\\generated dist\\prisma\\generated /E >NUL & if %ERRORLEVEL% LEQ 7 exit 0 else exit %ERRORLEVEL%",
+    "build": "tsc && node tools/copy-prisma-generated.mjs",
     "dev": "cross-env NODE_ENV=development tsx server.ts",
     "start": "cross-env NODE_ENV=production node dist/server.js",
     "whatsapp:connect": "npm run build && node dist/src/scripts/connect-whatsapp.js",

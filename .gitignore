@@ -1,7 +1,8 @@
 node_modules
+dist
 # Keep environment variables out of version control
 .env
-dev.db
+data.db
 /generated/prisma
 auth_info
 
@@ -10,3 +11,7 @@ auth_info
 
 /sessions
 /.wwebjs_cache
+
+logs*
+
+/dist

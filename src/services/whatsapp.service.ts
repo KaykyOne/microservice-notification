@@ -1,10 +1,10 @@
-import { prismaManager } from "../../prisma/prisma.ts";
-import { logger } from '../logs/logger.ts'
-import { whatsapp } from "../infra/index.ts";
-import { tempoHumano, iniciadorAleatorio } from "../common/humanization.ts";
-import { send } from "./email.service.ts";
+import { prismaManager } from "../../prisma/prisma.js";
+import { logger } from '../logs/logger.js'
+import { whatsapp } from "../infra/index.js";
+import { tempoHumano, iniciadorAleatorio } from "../common/humanization.js";
+import { send } from "./email.service.js";
 
-const { TEMPO_ENTRE_MENSAGENS, startBot, enviarMensagem, state, destruirSessao, getBotStatus } = whatsapp;
+const { startBot, enviarMensagem, state, destruirSessao, getBotStatus } = whatsapp;
 const emailWarning = process.env.EMAIL_WARNING;
 
 let enviando = false;

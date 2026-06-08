@@ -8,8 +8,8 @@ import {
     deleteScheduledMessagesForPhone,
     connectWhatsappBotService,
     getWhatsappBotStatusService
-} from "../services/whatsapp.service.ts";
-import { logger } from "../logs/logger.ts";
+} from "../services/whatsapp.service.js";
+import { logger } from "../logs/logger.js";
 
 async function sendMessage(req, res) {
     const { text, phone, forAt } = req.body;

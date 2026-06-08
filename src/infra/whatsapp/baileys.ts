@@ -3,8 +3,8 @@ import qrCodeGerator from 'qrcode-terminal';
 import pino from 'pino';
 import * as fs from 'fs/promises';
 import { createRequire } from 'module';
-import { logger } from '../../logs/logger.ts';
-import { send } from '../../services/email.service.ts';
+import { logger } from '../../logs/logger.js';
+// import { send } from '../../services/email.service.ts';
 
 const require = createRequire(import.meta.url);
 const QRCode = require('qrcode-terminal/vendor/QRCode');
@@ -186,9 +186,9 @@ function registerSocketEvents() {
             console.log('🚫 Logout detectado, não será possível reconectar.');
             logger.error('Logout detectado, reinício do bot falhou após 4 tentativas. Verifique a sessão do WhatsApp.');
 
-            if (emailWarning) {
-                await send('Logout detectado, reinício do bot falhou após 4 tentativas. Verifique a sessão do WhatsApp.', emailWarning);
-            }
+            // if (emailWarning) {
+            //     await send('Logout detectado, reinício do bot falhou após 4 tentativas. Verifique a sessão do WhatsApp.', emailWarning);
+            // }
 
             await fs.rm(SESSION_PATH, { recursive: true, force: true });
             console.clear();

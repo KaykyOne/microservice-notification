@@ -1,7 +1,7 @@
 import crypto from 'crypto';
-import { sendRootEmailService } from './email.service.ts';
-import { prismaManager } from "../../prisma/prisma.ts";
-import { logger } from '../logs/logger.ts';
+import { sendRootEmailService } from './email.service.js';
+import { prismaManager } from "../../prisma/prisma.js";
+import { logger } from '../logs/logger.js';
 
 async function generateKey() {
     try {

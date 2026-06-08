@@ -8,10 +8,11 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": false,
+    "rootDir": ".",
+    "outDir": "dist"
   },
   "include": ["server.ts", "prisma/**/*.ts", "src/**/*.ts"]
 }

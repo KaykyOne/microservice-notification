@@ -4,12 +4,9 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import path from "path";
-import { fileURLToPath } from "url";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const dashboardFilePath = path.resolve(__dirname, "./src/views/html/index.html");
-const dashboardAssetsPath = path.resolve(__dirname, "./src/views");
-import routes from "./routes/routes.ts";
+const dashboardFilePath = path.resolve(process.cwd(), "src/views/html/index.html");
+const dashboardAssetsPath = path.resolve(process.cwd(), "src/views");
+import routes from "./routes/routes.js";
 
 const app = express();
 

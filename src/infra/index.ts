@@ -1,8 +1,8 @@
-import { startBot, enviarMensagem, normalizeWhatsAppNumber, destruirSessao, TEMPO_ENTRE_MENSAGENS, state, getBotStatus } from "./whatsapp/baileys.ts";
+import { startBot, enviarMensagem, normalizeWhatsAppNumber, destruirSessao, state, getBotStatus } from "./whatsapp/baileys.js";
 
-import transporter from "./email/email.ts";
+import transporter from "./email/email.js";
 
-const whatsapp = { startBot, enviarMensagem, normalizeWhatsAppNumber, destruirSessao, TEMPO_ENTRE_MENSAGENS, state, getBotStatus };
+const whatsapp = { startBot, enviarMensagem, normalizeWhatsAppNumber, destruirSessao, state, getBotStatus };
 const email = transporter;
 
 export { whatsapp, email };

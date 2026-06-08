@@ -1,4 +1,5 @@
 node_modules
+dist
 # Keep environment variables out of version control
 .env
 data.db
@@ -10,3 +11,7 @@ auth_info
 
 /sessions
 /.wwebjs_cache
+
+logs*
+
+/dist

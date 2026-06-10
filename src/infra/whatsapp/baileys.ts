@@ -11,6 +11,8 @@ const QRCode = require('qrcode-terminal/vendor/QRCode');
 
 const SESSION_PATH = './sessions/whatsapp-baileys';
 const TEMPO_ENTRE_MENSAGENS = 20000;
+const MAX_RESTART_ATTEMPTS = 4;
+const RESTART_DELAY_MS = 5000;
 
 const state = {
     iniciado: false,
@@ -27,6 +29,8 @@ let sock = null;
 let tentativasReinicio = 0;
 let reinicioProgramado = null;
 let encerrandoManual = false;
+let startPromise = null;
+let socketGeneration = 0;
 
 const { version } = await fetchLatestBaileysVersion();
 
@@ -82,41 +86,105 @@ function clearRestartTimer() {
     }
 }
 
+function getDisconnectInfo(lastDisconnect) {
+    const error = lastDisconnect?.error;
+    const statusCode = error?.output?.statusCode;
+    const reason = error?.output?.payload?.message
+        || error?.message
+        || String(statusCode ?? 'unknown');
+    const reasonName = Object.entries(DisconnectReason)
+        .find(([, value]) => value === statusCode)?.[0]
+        || 'unknown';
+
+    return { statusCode, reason, reasonName };
+}
+
+function removeSocketListeners(targetSock) {
+    targetSock?.ev?.removeAllListeners?.('connection.update');
+    targetSock?.ev?.removeAllListeners?.('messages.upsert');
+    targetSock?.ev?.removeAllListeners?.('creds.update');
+}
+
+async function cleanupSocket(reason = 'cleanup', options = { close: true }) {
+    const targetSock = sock;
+
+    if (!targetSock) {
+        return;
+    }
+
+    removeSocketListeners(targetSock);
+
+    if (options.close) {
+        try {
+            const ws = targetSock.ws;
+            if (ws && !ws.isClosed && !ws.isClosing) {
+                await ws.close();
+            }
+        } catch (error) {
+            logger.error(`Erro ao fechar socket Baileys durante ${reason}: ${error.message}`);
+        }
+    }
+
+    if (sock === targetSock) {
+        sock = null;
+    }
+}
+
+function safeBuildQrMatrix(qr) {
+    try {
+        return buildQrMatrix(qr);
+    } catch (error) {
+        logger.error(`Erro ao montar matriz do QR Code: ${error.message}`);
+        return null;
+    }
+}
+
 async function startSession() {
+    socketGeneration++;
+    await cleanupSocket('inicio de nova sessao');
+
     const { state: authState, saveCreds } = await useMultiFileAuthState(SESSION_PATH);
 
-    sock = makeWASocket({
+    const currentGeneration = socketGeneration;
+    const currentSock = makeWASocket({
         version,
         printQRInTerminal: false,
         logger: pino({ level: 'error' }),
         auth: authState
     });
 
-    sock.ev.on('creds.update', saveCreds);
-    registerSocketEvents();
-    console.log('Sessão iniciada!');
+    sock = currentSock;
+    currentSock.ev.on('creds.update', saveCreds);
+    registerSocketEvents(currentSock, currentGeneration);
+    console.log(`[Baileys] Sessao iniciada. socketGeneration=${currentGeneration}`);
 }
 
-function scheduleRestart(nextAttempt) {
-    clearRestartTimer();
+function scheduleRestart(nextAttempt, statusCode, reason) {
+    if (reinicioProgramado) {
+        console.log(`[Baileys] Reinicio ja programado. statusCode=${statusCode ?? 'unknown'} reason=${reason} tentativa=${nextAttempt}/${MAX_RESTART_ATTEMPTS}`);
+        return;
+    }
+
     reinicioProgramado = setTimeout(() => {
+        reinicioProgramado = null;
         startBot(nextAttempt).catch((error) => {
             logger.error('Erro ao reiniciar bot: ' + error.message);
         });
-    }, 5000);
+    }, RESTART_DELAY_MS);
 }
 
-function registerSocketEvents() {
-    sock.ev.on('connection.update', async (update) => {
+function registerSocketEvents(currentSock, currentGeneration) {
+    currentSock.ev.on('connection.update', async (update) => {
+        if (currentSock !== sock || currentGeneration !== socketGeneration) {
+            logger.info(`[Baileys] Ignorando connection.update de socket antigo. socketGeneration=${currentGeneration} activeGeneration=${socketGeneration}`);
+            return;
+        }
+
         console.log('connection.update RAW:', JSON.stringify(update));
         const { connection, lastDisconnect, qr, isNewLogin } = update;
 
         if (isNewLogin) {
-            console.log('🔑 Novo login detectado, reconectando...');
-            sock = null;
-            resetConnectionState('starting');
-            await startSession();
-            return;
+            console.log('[Baileys] isNewLogin detectado; mantendo o socket atual sem reiniciar.');
         }
 
 
@@ -127,13 +195,13 @@ function registerSocketEvents() {
                 autenticado: false,
                 conectado: false,
                 ultimoQr: qr,
-                qrMatrix: buildQrMatrix(qr),
+                qrMatrix: safeBuildQrMatrix(qr),
                 status: 'qr'
             });
         }
 
         if (connection === 'open') {
-            console.log('✅ Conectado com sucesso!');
+            console.log('[Baileys] Conectado com sucesso.');
             tentativasReinicio = 0;
             setState({
                 iniciado: true,
@@ -159,9 +227,12 @@ function registerSocketEvents() {
                 return;
             }
 
-            const statusCode = lastDisconnect?.error?.output?.statusCode;
+            const { statusCode, reason, reasonName } = getDisconnectInfo(lastDisconnect);
             const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
-            const reason = lastDisconnect?.error?.message || String(statusCode ?? 'unknown');
+            removeSocketListeners(currentSock);
+            if (sock === currentSock) {
+                sock = null;
+            }
 
             setState({
                 iniciado: false,
@@ -172,30 +243,41 @@ function registerSocketEvents() {
                 ultimaRazaoDesconexao: reason
             });
 
-            console.log('❌ Conexão fechada, tentando reconectar...');
+            console.log(`[Baileys] Conexao fechada. statusCode=${statusCode ?? 'unknown'} reason=${reasonName}:${reason} tentativaAtual=${tentativasReinicio}/${MAX_RESTART_ATTEMPTS}`);
 
-            if (shouldReconnect && tentativasReinicio < 4) {
+            if (shouldReconnect && tentativasReinicio < MAX_RESTART_ATTEMPTS) {
                 tentativasReinicio++;
-                console.log(`🔄 Tentativa de reinício ${tentativasReinicio}/4`);
+                console.log(`[Baileys] Agendando reinicio ${tentativasReinicio}/${MAX_RESTART_ATTEMPTS} em ${RESTART_DELAY_MS}ms. statusCode=${statusCode ?? 'unknown'} reason=${reason}`);
                 setState({ inicializando: true });
-                scheduleRestart(tentativasReinicio);
+                scheduleRestart(tentativasReinicio, statusCode, reason);
                 return;
             }
 
             clearRestartTimer();
-            console.log('🚫 Logout detectado, não será possível reconectar.');
-            logger.error('Logout detectado, reinício do bot falhou após 4 tentativas. Verifique a sessão do WhatsApp.');
 
             // if (emailWarning) {
             //     await send('Logout detectado, reinício do bot falhou após 4 tentativas. Verifique a sessão do WhatsApp.', emailWarning);
             // }
 
+            const finalReason = statusCode === DisconnectReason.loggedOut
+                ? 'loggedOut'
+                : `falha apos ${MAX_RESTART_ATTEMPTS} tentativas`;
+            console.log(`[Baileys] Encerrando reconexao: ${finalReason}. statusCode=${statusCode ?? 'unknown'} reason=${reasonName}:${reason}`);
+            logger.error(`[Baileys] Reconexao encerrada: ${finalReason}. statusCode=${statusCode ?? 'unknown'} reason=${reasonName}:${reason}`);
+
             await fs.rm(SESSION_PATH, { recursive: true, force: true });
-            console.clear();
+            resetConnectionState('stopped');
+            setState({
+                ultimaRazaoDesconexao: reason
+            });
         }
     });
 
-    sock.ev.on('messages.upsert', ({ messages, type }) => {
+    currentSock.ev.on('messages.upsert', ({ messages, type }) => {
+        if (currentSock !== sock || currentGeneration !== socketGeneration) {
+            return;
+        }
+
         if (type !== 'notify') {
             return;
         }
@@ -214,23 +296,36 @@ function registerSocketEvents() {
 }
 
 async function startBot(tentativasReinicioParam = 0) {
-    if (state.inicializando || state.iniciado) {
+    if (startPromise) {
+        await startPromise;
+        return getBotStatus();
+    }
+
+    if (state.iniciado || state.conectado) {
         return getBotStatus();
     }
 
     clearRestartTimer();
     tentativasReinicio = tentativasReinicioParam;
 
-    setState({
-        inicializando: true,
-        status: 'starting',
-        ultimaRazaoDesconexao: null
-    });
+    startPromise = (async () => {
+        setState({
+            inicializando: true,
+            status: 'starting',
+            ultimaRazaoDesconexao: null
+        });
 
-    await startSession();
+        await startSession();
 
-    console.log('Bot iniciado com Baileys');
-    return getBotStatus();
+        console.log('Bot iniciado com Baileys');
+        return getBotStatus();
+    })();
+
+    try {
+        return await startPromise;
+    } finally {
+        startPromise = null;
+    }
 }
 
 async function normalizeWhatsAppNumber(phone) {
@@ -288,22 +383,16 @@ async function destruirSessao() {
         clearRestartTimer();
         tentativasReinicio = 0;
         encerrandoManual = true;
+        socketGeneration++;
 
         if (sock) {
-            try {
-                if (!sock.ws.isClosed && !sock.ws.isClosing) {
-                    await sock.ws.close();
-                }
-            } catch (logoutError) {
-                logger.error('Erro ao encerrar sessao do Baileys: ' + logoutError.message);
-            }
-
-            sock = null;
+            await cleanupSocket('destruicao manual');
             console.log('Sessao destruida');
         } else {
             encerrandoManual = false;
         }
 
+        encerrandoManual = false;
         resetConnectionState('stopped');
         setState({
             ultimaRazaoDesconexao: null

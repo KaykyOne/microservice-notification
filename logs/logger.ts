@@ -2,7 +2,7 @@ import pino from 'pino'
 
 export const logger = pino(
   pino.destination({
-    dest: './',
+    dest: './logs/app.log',
     mkdir: true,
     sync: false
   })

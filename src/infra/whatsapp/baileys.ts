@@ -4,7 +4,7 @@ import pino from 'pino';
 import * as fs from 'fs/promises';
 import { createRequire } from 'module';
 import { logger } from '../../../logs/logger.js';
-// import { send } from '../../services/email.service.ts';
+import { sendToWebhook } from '../../http/services/whatsapp.service.js';
 
 const require = createRequire(import.meta.url);
 const QRCode = require('qrcode-terminal/vendor/QRCode');
@@ -40,8 +40,6 @@ process.on('unhandledRejection', (reason) => {
 process.on('uncaughtException', (error) => {
     logger.error(error);
 });
-
-const emailWarning = process.env.EMAIL_WARNING;
 
 function setState(partialState) {
     Object.assign(state, partialState);
@@ -273,24 +271,35 @@ function registerSocketEvents(currentSock, currentGeneration) {
         }
     });
 
-    currentSock.ev.on('messages.upsert', ({ messages, type }) => {
-        if (currentSock !== sock || currentGeneration !== socketGeneration) {
-            return;
-        }
-
-        if (type !== 'notify') {
-            return;
-        }
-
+    currentSock.ev.on('messages.upsert', async ({ messages }) => {
         for (const message of messages) {
-            const from = message?.key?.remoteJid;
-            const text = message?.message?.conversation
-                || message?.message?.extendedTextMessage?.text
-                || '';
-
-            if (from && text) {
-                console.log(`Mensagem recebida de ${from}: ${text}`);
+            if (message.key.fromMe) {
+                continue;
             }
+
+            const from =
+                message.key.remoteJidAlt ||
+                message.key.remoteJid;
+
+            const text =
+                message.message?.conversation ||
+                message.message?.extendedTextMessage?.text ||
+                '';
+
+            if (!from || !text) {
+                continue;
+            }
+
+            console.log(`Mensagem recebida de ${from}: ${text}`);
+
+            await sendToWebhook(
+                {
+                    from,
+                    text,
+                    id: message.key.id,
+                },
+                from
+            );
         }
     });
 }

@@ -997,11 +997,11 @@ export namespace Prisma {
    */
 
   export type OriginCountOutputType = {
-    Messages: number
+    messages: number
   }
 
   export type OriginCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Messages?: boolean | OriginCountOutputTypeCountMessagesArgs
+    messages?: boolean | OriginCountOutputTypeCountMessagesArgs
   }
 
   // Custom InputTypes
@@ -1041,7 +1041,6 @@ export namespace Prisma {
     id: string | null
     name: string | null
     status: $Enums.Status | null
-    webhook: string | null
     createdAt: Date | null
     key: string | null
   }
@@ -1050,7 +1049,6 @@ export namespace Prisma {
     id: string | null
     name: string | null
     status: $Enums.Status | null
-    webhook: string | null
     createdAt: Date | null
     key: string | null
   }
@@ -1059,7 +1057,6 @@ export namespace Prisma {
     id: number
     name: number
     status: number
-    webhook: number
     createdAt: number
     key: number
     _all: number
@@ -1070,7 +1067,6 @@ export namespace Prisma {
     id?: true
     name?: true
     status?: true
-    webhook?: true
     createdAt?: true
     key?: true
   }
@@ -1079,7 +1075,6 @@ export namespace Prisma {
     id?: true
     name?: true
     status?: true
-    webhook?: true
     createdAt?: true
     key?: true
   }
@@ -1088,7 +1083,6 @@ export namespace Prisma {
     id?: true
     name?: true
     status?: true
-    webhook?: true
     createdAt?: true
     key?: true
     _all?: true
@@ -1170,7 +1164,6 @@ export namespace Prisma {
     id: string
     name: string
     status: $Enums.Status
-    webhook: string
     createdAt: Date
     key: string
     _count: OriginCountAggregateOutputType | null
@@ -1196,10 +1189,9 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     status?: boolean
-    webhook?: boolean
     createdAt?: boolean
     key?: boolean
-    Messages?: boolean | Origin$MessagesArgs<ExtArgs>
+    messages?: boolean | Origin$messagesArgs<ExtArgs>
     _count?: boolean | OriginCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["origin"]>
 
@@ -1207,7 +1199,6 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     status?: boolean
-    webhook?: boolean
     createdAt?: boolean
     key?: boolean
   }, ExtArgs["result"]["origin"]>
@@ -1216,7 +1207,6 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     status?: boolean
-    webhook?: boolean
     createdAt?: boolean
     key?: boolean
   }, ExtArgs["result"]["origin"]>
@@ -1225,14 +1215,13 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     status?: boolean
-    webhook?: boolean
     createdAt?: boolean
     key?: boolean
   }
 
-  export type OriginOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "status" | "webhook" | "createdAt" | "key", ExtArgs["result"]["origin"]>
+  export type OriginOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "status" | "createdAt" | "key", ExtArgs["result"]["origin"]>
   export type OriginInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Messages?: boolean | Origin$MessagesArgs<ExtArgs>
+    messages?: boolean | Origin$messagesArgs<ExtArgs>
     _count?: boolean | OriginCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OriginIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1241,13 +1230,12 @@ export namespace Prisma {
   export type $OriginPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Origin"
     objects: {
-      Messages: Prisma.$MessagePayload<ExtArgs>[]
+      messages: Prisma.$MessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
       status: $Enums.Status
-      webhook: string
       createdAt: Date
       key: string
     }, ExtArgs["result"]["origin"]>
@@ -1644,7 +1632,7 @@ export namespace Prisma {
    */
   export interface Prisma__OriginClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    Messages<T extends Origin$MessagesArgs<ExtArgs> = {}>(args?: Subset<T, Origin$MessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    messages<T extends Origin$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Origin$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1677,7 +1665,6 @@ export namespace Prisma {
     readonly id: FieldRef<"Origin", 'String'>
     readonly name: FieldRef<"Origin", 'String'>
     readonly status: FieldRef<"Origin", 'Status'>
-    readonly webhook: FieldRef<"Origin", 'String'>
     readonly createdAt: FieldRef<"Origin", 'DateTime'>
     readonly key: FieldRef<"Origin", 'String'>
   }
@@ -2066,9 +2053,9 @@ export namespace Prisma {
   }
 
   /**
-   * Origin.Messages
+   * Origin.messages
    */
-  export type Origin$MessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Origin$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Message
      */
@@ -2122,6 +2109,9 @@ export namespace Prisma {
     id: string | null
     text: string | null
     type: $Enums.typeMessage | null
+    webhook: string | null
+    webhookSent: boolean | null
+    webhookSentAt: Date | null
     createdAt: Date | null
     phone: string | null
     originId: string | null
@@ -2133,6 +2123,9 @@ export namespace Prisma {
     id: string | null
     text: string | null
     type: $Enums.typeMessage | null
+    webhook: string | null
+    webhookSent: boolean | null
+    webhookSentAt: Date | null
     createdAt: Date | null
     phone: string | null
     originId: string | null
@@ -2144,6 +2137,9 @@ export namespace Prisma {
     id: number
     text: number
     type: number
+    webhook: number
+    webhookSent: number
+    webhookSentAt: number
     createdAt: number
     phone: number
     originId: number
@@ -2157,6 +2153,9 @@ export namespace Prisma {
     id?: true
     text?: true
     type?: true
+    webhook?: true
+    webhookSent?: true
+    webhookSentAt?: true
     createdAt?: true
     phone?: true
     originId?: true
@@ -2168,6 +2167,9 @@ export namespace Prisma {
     id?: true
     text?: true
     type?: true
+    webhook?: true
+    webhookSent?: true
+    webhookSentAt?: true
     createdAt?: true
     phone?: true
     originId?: true
@@ -2179,6 +2181,9 @@ export namespace Prisma {
     id?: true
     text?: true
     type?: true
+    webhook?: true
+    webhookSent?: true
+    webhookSentAt?: true
     createdAt?: true
     phone?: true
     originId?: true
@@ -2263,6 +2268,9 @@ export namespace Prisma {
     id: string
     text: string
     type: $Enums.typeMessage
+    webhook: string | null
+    webhookSent: boolean
+    webhookSentAt: Date | null
     createdAt: Date
     phone: string
     originId: string | null
@@ -2291,6 +2299,9 @@ export namespace Prisma {
     id?: boolean
     text?: boolean
     type?: boolean
+    webhook?: boolean
+    webhookSent?: boolean
+    webhookSentAt?: boolean
     createdAt?: boolean
     phone?: boolean
     originId?: boolean
@@ -2303,6 +2314,9 @@ export namespace Prisma {
     id?: boolean
     text?: boolean
     type?: boolean
+    webhook?: boolean
+    webhookSent?: boolean
+    webhookSentAt?: boolean
     createdAt?: boolean
     phone?: boolean
     originId?: boolean
@@ -2315,6 +2329,9 @@ export namespace Prisma {
     id?: boolean
     text?: boolean
     type?: boolean
+    webhook?: boolean
+    webhookSent?: boolean
+    webhookSentAt?: boolean
     createdAt?: boolean
     phone?: boolean
     originId?: boolean
@@ -2327,6 +2344,9 @@ export namespace Prisma {
     id?: boolean
     text?: boolean
     type?: boolean
+    webhook?: boolean
+    webhookSent?: boolean
+    webhookSentAt?: boolean
     createdAt?: boolean
     phone?: boolean
     originId?: boolean
@@ -2334,7 +2354,7 @@ export namespace Prisma {
     forAt?: boolean
   }
 
-  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "type" | "createdAt" | "phone" | "originId" | "status" | "forAt", ExtArgs["result"]["message"]>
+  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "type" | "webhook" | "webhookSent" | "webhookSentAt" | "createdAt" | "phone" | "originId" | "status" | "forAt", ExtArgs["result"]["message"]>
   export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     origin?: boolean | Message$originArgs<ExtArgs>
   }
@@ -2354,6 +2374,9 @@ export namespace Prisma {
       id: string
       text: string
       type: $Enums.typeMessage
+      webhook: string | null
+      webhookSent: boolean
+      webhookSentAt: Date | null
       createdAt: Date
       phone: string
       originId: string | null
@@ -2786,6 +2809,9 @@ export namespace Prisma {
     readonly id: FieldRef<"Message", 'String'>
     readonly text: FieldRef<"Message", 'String'>
     readonly type: FieldRef<"Message", 'typeMessage'>
+    readonly webhook: FieldRef<"Message", 'String'>
+    readonly webhookSent: FieldRef<"Message", 'Boolean'>
+    readonly webhookSentAt: FieldRef<"Message", 'DateTime'>
     readonly createdAt: FieldRef<"Message", 'DateTime'>
     readonly phone: FieldRef<"Message", 'String'>
     readonly originId: FieldRef<"Message", 'String'>
@@ -3237,7 +3263,6 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     status: 'status',
-    webhook: 'webhook',
     createdAt: 'createdAt',
     key: 'key'
   };
@@ -3249,6 +3274,9 @@ export namespace Prisma {
     id: 'id',
     text: 'text',
     type: 'type',
+    webhook: 'webhook',
+    webhookSent: 'webhookSent',
+    webhookSentAt: 'webhookSentAt',
     createdAt: 'createdAt',
     phone: 'phone',
     originId: 'originId',
@@ -3309,6 +3337,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'statusMessage'
    */
   export type EnumstatusMessageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'statusMessage'>
@@ -3332,20 +3367,18 @@ export namespace Prisma {
     id?: StringFilter<"Origin"> | string
     name?: StringFilter<"Origin"> | string
     status?: EnumStatusFilter<"Origin"> | $Enums.Status
-    webhook?: StringFilter<"Origin"> | string
     createdAt?: DateTimeFilter<"Origin"> | Date | string
     key?: StringFilter<"Origin"> | string
-    Messages?: MessageListRelationFilter
+    messages?: MessageListRelationFilter
   }
 
   export type OriginOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
     status?: SortOrder
-    webhook?: SortOrder
     createdAt?: SortOrder
     key?: SortOrder
-    Messages?: MessageOrderByRelationAggregateInput
+    messages?: MessageOrderByRelationAggregateInput
   }
 
   export type OriginWhereUniqueInput = Prisma.AtLeast<{
@@ -3356,16 +3389,14 @@ export namespace Prisma {
     NOT?: OriginWhereInput | OriginWhereInput[]
     name?: StringFilter<"Origin"> | string
     status?: EnumStatusFilter<"Origin"> | $Enums.Status
-    webhook?: StringFilter<"Origin"> | string
     createdAt?: DateTimeFilter<"Origin"> | Date | string
-    Messages?: MessageListRelationFilter
+    messages?: MessageListRelationFilter
   }, "id" | "key">
 
   export type OriginOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
     status?: SortOrder
-    webhook?: SortOrder
     createdAt?: SortOrder
     key?: SortOrder
     _count?: OriginCountOrderByAggregateInput
@@ -3380,7 +3411,6 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Origin"> | string
     name?: StringWithAggregatesFilter<"Origin"> | string
     status?: EnumStatusWithAggregatesFilter<"Origin"> | $Enums.Status
-    webhook?: StringWithAggregatesFilter<"Origin"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Origin"> | Date | string
     key?: StringWithAggregatesFilter<"Origin"> | string
   }
@@ -3392,6 +3422,9 @@ export namespace Prisma {
     id?: StringFilter<"Message"> | string
     text?: StringFilter<"Message"> | string
     type?: EnumtypeMessageFilter<"Message"> | $Enums.typeMessage
+    webhook?: StringNullableFilter<"Message"> | string | null
+    webhookSent?: BoolFilter<"Message"> | boolean
+    webhookSentAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     createdAt?: DateTimeFilter<"Message"> | Date | string
     phone?: StringFilter<"Message"> | string
     originId?: StringNullableFilter<"Message"> | string | null
@@ -3404,6 +3437,9 @@ export namespace Prisma {
     id?: SortOrder
     text?: SortOrder
     type?: SortOrder
+    webhook?: SortOrderInput | SortOrder
+    webhookSent?: SortOrder
+    webhookSentAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     phone?: SortOrder
     originId?: SortOrderInput | SortOrder
@@ -3419,6 +3455,9 @@ export namespace Prisma {
     NOT?: MessageWhereInput | MessageWhereInput[]
     text?: StringFilter<"Message"> | string
     type?: EnumtypeMessageFilter<"Message"> | $Enums.typeMessage
+    webhook?: StringNullableFilter<"Message"> | string | null
+    webhookSent?: BoolFilter<"Message"> | boolean
+    webhookSentAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     createdAt?: DateTimeFilter<"Message"> | Date | string
     phone?: StringFilter<"Message"> | string
     originId?: StringNullableFilter<"Message"> | string | null
@@ -3431,6 +3470,9 @@ export namespace Prisma {
     id?: SortOrder
     text?: SortOrder
     type?: SortOrder
+    webhook?: SortOrderInput | SortOrder
+    webhookSent?: SortOrder
+    webhookSentAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     phone?: SortOrder
     originId?: SortOrderInput | SortOrder
@@ -3448,6 +3490,9 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Message"> | string
     text?: StringWithAggregatesFilter<"Message"> | string
     type?: EnumtypeMessageWithAggregatesFilter<"Message"> | $Enums.typeMessage
+    webhook?: StringNullableWithAggregatesFilter<"Message"> | string | null
+    webhookSent?: BoolWithAggregatesFilter<"Message"> | boolean
+    webhookSentAt?: DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
     phone?: StringWithAggregatesFilter<"Message"> | string
     originId?: StringNullableWithAggregatesFilter<"Message"> | string | null
@@ -3459,47 +3504,42 @@ export namespace Prisma {
     id?: string
     name: string
     status?: $Enums.Status
-    webhook: string
     createdAt?: Date | string
     key: string
-    Messages?: MessageCreateNestedManyWithoutOriginInput
+    messages?: MessageCreateNestedManyWithoutOriginInput
   }
 
   export type OriginUncheckedCreateInput = {
     id?: string
     name: string
     status?: $Enums.Status
-    webhook: string
     createdAt?: Date | string
     key: string
-    Messages?: MessageUncheckedCreateNestedManyWithoutOriginInput
+    messages?: MessageUncheckedCreateNestedManyWithoutOriginInput
   }
 
   export type OriginUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    webhook?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     key?: StringFieldUpdateOperationsInput | string
-    Messages?: MessageUpdateManyWithoutOriginNestedInput
+    messages?: MessageUpdateManyWithoutOriginNestedInput
   }
 
   export type OriginUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    webhook?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     key?: StringFieldUpdateOperationsInput | string
-    Messages?: MessageUncheckedUpdateManyWithoutOriginNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutOriginNestedInput
   }
 
   export type OriginCreateManyInput = {
     id?: string
     name: string
     status?: $Enums.Status
-    webhook: string
     createdAt?: Date | string
     key: string
   }
@@ -3508,7 +3548,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    webhook?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     key?: StringFieldUpdateOperationsInput | string
   }
@@ -3517,7 +3556,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    webhook?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     key?: StringFieldUpdateOperationsInput | string
   }
@@ -3526,6 +3564,9 @@ export namespace Prisma {
     id?: string
     text: string
     type: $Enums.typeMessage
+    webhook?: string | null
+    webhookSent?: boolean
+    webhookSentAt?: Date | string | null
     createdAt?: Date | string
     phone: string
     status?: $Enums.statusMessage
@@ -3537,6 +3578,9 @@ export namespace Prisma {
     id?: string
     text: string
     type: $Enums.typeMessage
+    webhook?: string | null
+    webhookSent?: boolean
+    webhookSentAt?: Date | string | null
     createdAt?: Date | string
     phone: string
     originId?: string | null
@@ -3548,6 +3592,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     type?: EnumtypeMessageFieldUpdateOperationsInput | $Enums.typeMessage
+    webhook?: NullableStringFieldUpdateOperationsInput | string | null
+    webhookSent?: BoolFieldUpdateOperationsInput | boolean
+    webhookSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     phone?: StringFieldUpdateOperationsInput | string
     status?: EnumstatusMessageFieldUpdateOperationsInput | $Enums.statusMessage
@@ -3559,6 +3606,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     type?: EnumtypeMessageFieldUpdateOperationsInput | $Enums.typeMessage
+    webhook?: NullableStringFieldUpdateOperationsInput | string | null
+    webhookSent?: BoolFieldUpdateOperationsInput | boolean
+    webhookSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     phone?: StringFieldUpdateOperationsInput | string
     originId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3570,6 +3620,9 @@ export namespace Prisma {
     id?: string
     text: string
     type: $Enums.typeMessage
+    webhook?: string | null
+    webhookSent?: boolean
+    webhookSentAt?: Date | string | null
     createdAt?: Date | string
     phone: string
     originId?: string | null
@@ -3581,6 +3634,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     type?: EnumtypeMessageFieldUpdateOperationsInput | $Enums.typeMessage
+    webhook?: NullableStringFieldUpdateOperationsInput | string | null
+    webhookSent?: BoolFieldUpdateOperationsInput | boolean
+    webhookSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     phone?: StringFieldUpdateOperationsInput | string
     status?: EnumstatusMessageFieldUpdateOperationsInput | $Enums.statusMessage
@@ -3591,6 +3647,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     type?: EnumtypeMessageFieldUpdateOperationsInput | $Enums.typeMessage
+    webhook?: NullableStringFieldUpdateOperationsInput | string | null
+    webhookSent?: BoolFieldUpdateOperationsInput | boolean
+    webhookSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     phone?: StringFieldUpdateOperationsInput | string
     originId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3644,7 +3703,6 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     status?: SortOrder
-    webhook?: SortOrder
     createdAt?: SortOrder
     key?: SortOrder
   }
@@ -3653,7 +3711,6 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     status?: SortOrder
-    webhook?: SortOrder
     createdAt?: SortOrder
     key?: SortOrder
   }
@@ -3662,7 +3719,6 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     status?: SortOrder
-    webhook?: SortOrder
     createdAt?: SortOrder
     key?: SortOrder
   }
@@ -3729,6 +3785,22 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type EnumstatusMessageFilter<$PrismaModel = never> = {
     equals?: $Enums.statusMessage | EnumstatusMessageFieldRefInput<$PrismaModel>
     in?: $Enums.statusMessage[]
@@ -3750,6 +3822,9 @@ export namespace Prisma {
     id?: SortOrder
     text?: SortOrder
     type?: SortOrder
+    webhook?: SortOrder
+    webhookSent?: SortOrder
+    webhookSentAt?: SortOrder
     createdAt?: SortOrder
     phone?: SortOrder
     originId?: SortOrder
@@ -3761,6 +3836,9 @@ export namespace Prisma {
     id?: SortOrder
     text?: SortOrder
     type?: SortOrder
+    webhook?: SortOrder
+    webhookSent?: SortOrder
+    webhookSentAt?: SortOrder
     createdAt?: SortOrder
     phone?: SortOrder
     originId?: SortOrder
@@ -3772,6 +3850,9 @@ export namespace Prisma {
     id?: SortOrder
     text?: SortOrder
     type?: SortOrder
+    webhook?: SortOrder
+    webhookSent?: SortOrder
+    webhookSentAt?: SortOrder
     createdAt?: SortOrder
     phone?: SortOrder
     originId?: SortOrder
@@ -3804,6 +3885,28 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type EnumstatusMessageWithAggregatesFilter<$PrismaModel = never> = {
@@ -3880,6 +3983,18 @@ export namespace Prisma {
     set?: $Enums.typeMessage
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type EnumstatusMessageFieldUpdateOperationsInput = {
     set?: $Enums.statusMessage
   }
@@ -3892,10 +4007,6 @@ export namespace Prisma {
     delete?: OriginWhereInput | boolean
     connect?: OriginWhereUniqueInput
     update?: XOR<XOR<OriginUpdateToOneWithWhereWithoutMessagesInput, OriginUpdateWithoutMessagesInput>, OriginUncheckedUpdateWithoutMessagesInput>
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -4003,6 +4114,22 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedEnumstatusMessageFilter<$PrismaModel = never> = {
     equals?: $Enums.statusMessage | EnumstatusMessageFieldRefInput<$PrismaModel>
     in?: $Enums.statusMessage[]
@@ -4048,6 +4175,28 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type NestedEnumstatusMessageWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.statusMessage | EnumstatusMessageFieldRefInput<$PrismaModel>
     in?: $Enums.statusMessage[]
@@ -4062,6 +4211,9 @@ export namespace Prisma {
     id?: string
     text: string
     type: $Enums.typeMessage
+    webhook?: string | null
+    webhookSent?: boolean
+    webhookSentAt?: Date | string | null
     createdAt?: Date | string
     phone: string
     status?: $Enums.statusMessage
@@ -4072,6 +4224,9 @@ export namespace Prisma {
     id?: string
     text: string
     type: $Enums.typeMessage
+    webhook?: string | null
+    webhookSent?: boolean
+    webhookSentAt?: Date | string | null
     createdAt?: Date | string
     phone: string
     status?: $Enums.statusMessage
@@ -4110,6 +4265,9 @@ export namespace Prisma {
     id?: StringFilter<"Message"> | string
     text?: StringFilter<"Message"> | string
     type?: EnumtypeMessageFilter<"Message"> | $Enums.typeMessage
+    webhook?: StringNullableFilter<"Message"> | string | null
+    webhookSent?: BoolFilter<"Message"> | boolean
+    webhookSentAt?: DateTimeNullableFilter<"Message"> | Date | string | null
     createdAt?: DateTimeFilter<"Message"> | Date | string
     phone?: StringFilter<"Message"> | string
     originId?: StringNullableFilter<"Message"> | string | null
@@ -4121,7 +4279,6 @@ export namespace Prisma {
     id?: string
     name: string
     status?: $Enums.Status
-    webhook: string
     createdAt?: Date | string
     key: string
   }
@@ -4130,7 +4287,6 @@ export namespace Prisma {
     id?: string
     name: string
     status?: $Enums.Status
-    webhook: string
     createdAt?: Date | string
     key: string
   }
@@ -4155,7 +4311,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    webhook?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     key?: StringFieldUpdateOperationsInput | string
   }
@@ -4164,7 +4319,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    webhook?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     key?: StringFieldUpdateOperationsInput | string
   }
@@ -4173,6 +4327,9 @@ export namespace Prisma {
     id?: string
     text: string
     type: $Enums.typeMessage
+    webhook?: string | null
+    webhookSent?: boolean
+    webhookSentAt?: Date | string | null
     createdAt?: Date | string
     phone: string
     status?: $Enums.statusMessage
@@ -4183,6 +4340,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     type?: EnumtypeMessageFieldUpdateOperationsInput | $Enums.typeMessage
+    webhook?: NullableStringFieldUpdateOperationsInput | string | null
+    webhookSent?: BoolFieldUpdateOperationsInput | boolean
+    webhookSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     phone?: StringFieldUpdateOperationsInput | string
     status?: EnumstatusMessageFieldUpdateOperationsInput | $Enums.statusMessage
@@ -4193,6 +4353,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     type?: EnumtypeMessageFieldUpdateOperationsInput | $Enums.typeMessage
+    webhook?: NullableStringFieldUpdateOperationsInput | string | null
+    webhookSent?: BoolFieldUpdateOperationsInput | boolean
+    webhookSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     phone?: StringFieldUpdateOperationsInput | string
     status?: EnumstatusMessageFieldUpdateOperationsInput | $Enums.statusMessage
@@ -4203,6 +4366,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     type?: EnumtypeMessageFieldUpdateOperationsInput | $Enums.typeMessage
+    webhook?: NullableStringFieldUpdateOperationsInput | string | null
+    webhookSent?: BoolFieldUpdateOperationsInput | boolean
+    webhookSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     phone?: StringFieldUpdateOperationsInput | string
     status?: EnumstatusMessageFieldUpdateOperationsInput | $Enums.statusMessage

@@ -32,20 +32,22 @@ model Origin {
   id        String    @id @default(cuid())
   name      String
   status    Status    @default(ACTIVE)
-  webhook   String
   createdAt DateTime  @default(now())
   key       String    @unique
-  Messages  Message[]
+  messages  Message[]
 }
 
 model Message {
-  id        String        @id @default(cuid())
-  text      String
-  type      typeMessage
-  createdAt DateTime      @default(now())
-  phone     String
-  origin    Origin?       @relation(fields: [originId], references: [id])
-  originId  String?
-  status    statusMessage @default(PENDING)
-  forAt     DateTime      @default(now())
+  id            String        @id @default(cuid())
+  text          String
+  type          typeMessage
+  webhook       String?
+  webhookSent   Boolean       @default(false)
+  webhookSentAt DateTime?
+  createdAt     DateTime      @default(now())
+  phone         String
+  origin        Origin?       @relation(fields: [originId], references: [id])
+  originId      String?
+  status        statusMessage @default(PENDING)
+  forAt         DateTime      @default(now())
 }

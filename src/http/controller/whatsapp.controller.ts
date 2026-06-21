@@ -12,7 +12,7 @@ import {
 import { logger } from "../../../logs/logger.js";
 
 async function sendMessage(req, res) {
-    const { text, phone, forAt } = req.body;
+    const { text, phone, forAt, webhook } = req.body;
 
     if (!text || !phone) {
         return res.status(400).json({ message: "As propriedades text ou phone nao foram encontradas!" });
@@ -20,7 +20,7 @@ async function sendMessage(req, res) {
 
     logger.info(`Recebida requisicao para enviar mensagem para ${phone}`);
     try {
-        await sendMessageService({ text, phone, forAt });
+        await sendMessageService({ text, phone, forAt, webhook });
         return res.status(200).json({ message: "Mensagem enviada com sucesso!" });
     } catch (error) {
         return res.status(500).json({

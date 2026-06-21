@@ -7,6 +7,7 @@
     "dev": "cross-env NODE_ENV=development tsx server.ts",
     "start": "cross-env NODE_ENV=production node dist/server.js",
     "whatsapp:connect": "npm run build && node dist/src/scripts/connect-whatsapp.js",
+    "create-origin": "npm run build && node dist/src/scripts/create-origin.js",
     "whatsapp:delete-session": "npm run build && node dist/src/scripts/delete-whatsapp-session.js",
     "service:start": "npm run build && node dist/src/scripts/start-microservice.js",
     "service:stop": "npm run build && node dist/src/scripts/stop-microservice.js",

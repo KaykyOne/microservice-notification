@@ -15,7 +15,7 @@ function formatNumber(phone) {
     return phoneFormated.startsWith('55') ? phoneFormated : `55${phoneFormated}`;
 };
 
-async function sendMessageService({ text, phone, forAt }) {
+async function sendMessageService({ text, phone, forAt, webhook }) {
     const numeroFormatado = formatNumber(phone);
     const dataFormatada = forAt ? new Date(forAt) : null;
 
@@ -27,6 +27,7 @@ async function sendMessageService({ text, phone, forAt }) {
                     text,
                     phone: numeroFormatado,
                     status: 'SCHEDULED',
+                    webhook: webhook || null,
                     type: 'WHATSAPP',
                     forAt: dataFormatada
                 }
@@ -39,6 +40,7 @@ async function sendMessageService({ text, phone, forAt }) {
                     text,
                     phone: numeroFormatado,
                     status: 'PENDING',
+                    webhook: webhook || null,
                     type: 'WHATSAPP'
                 }
             });
@@ -173,8 +175,51 @@ function getWhatsappBotStatusService() {
     return getBotStatus();
 }
 
-setInterval(seeBD, 10000);
+async function sendToWebhook(message, number) {
+    console.log('Verificando webhooks para o número:', number);
 
+    const webhooksForNumber = await prismaManager.message.findMany({
+        where: {
+            phone: number,
+            webhookSent: false,
+            webhook: { not: null }
+        },
+        select: {
+            id: true,
+            webhook: true
+        }
+    });
+
+    console.log(`Encontrados ${webhooksForNumber.length} webhooks para o número ${number}.`);
+
+    for (const webhook of webhooksForNumber) {
+        if (!webhook.webhook) continue;
+        try {
+            await fetch(webhook.webhook, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(message)
+            });
+
+            await prismaManager.message.update({
+                where: {
+                    id: webhook.id
+                },
+                data: {
+                    webhookSent: true,
+                    webhookSentAt: new Date()
+                }
+            });
+        } catch (error) {
+            logger.error(`Erro ao enviar mensagem para webhook ${webhook.webhook}: ${error.message}`);
+        }
+    }
+
+}
+
+setInterval(seeBD, 10000);
 
 export {
     sendMessageService,
@@ -185,5 +230,6 @@ export {
     start,
     stopWhatsappBotService,
     connectWhatsappBotService,
-    getWhatsappBotStatusService
+    getWhatsappBotStatusService,
+    sendToWebhook
 };

@@ -94,7 +94,6 @@ exports.Prisma.OriginScalarFieldEnum = {
   id: 'id',
   name: 'name',
   status: 'status',
-  webhook: 'webhook',
   createdAt: 'createdAt',
   key: 'key'
 };
@@ -103,6 +102,9 @@ exports.Prisma.MessageScalarFieldEnum = {
   id: 'id',
   text: 'text',
   type: 'type',
+  webhook: 'webhook',
+  webhookSent: 'webhookSent',
+  webhookSentAt: 'webhookSentAt',
   createdAt: 'createdAt',
   phone: 'phone',
   originId: 'originId',
@@ -149,10 +151,10 @@ const config = {
   "clientVersion": "7.2.0",
   "engineVersion": "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
   "activeProvider": "sqlite",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated/prisma\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n}\n\nenum typeMessage {\n  EMAIL\n  WHATSAPP\n  SMS\n}\n\nenum Status {\n  ACTIVE\n  INACTIVE\n}\n\nenum statusMessage {\n  PENDING\n  SENT\n  FAILED\n  SCHEDULED\n}\n\nmodel Origin {\n  id        String    @id @default(cuid())\n  name      String\n  status    Status    @default(ACTIVE)\n  webhook   String\n  createdAt DateTime  @default(now())\n  key       String    @unique\n  Messages  Message[]\n}\n\nmodel Message {\n  id        String        @id @default(cuid())\n  text      String\n  type      typeMessage\n  createdAt DateTime      @default(now())\n  phone     String\n  origin    Origin?       @relation(fields: [originId], references: [id])\n  originId  String?\n  status    statusMessage @default(PENDING)\n  forAt     DateTime      @default(now())\n}\n"
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated/prisma\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n}\n\nenum typeMessage {\n  EMAIL\n  WHATSAPP\n  SMS\n}\n\nenum Status {\n  ACTIVE\n  INACTIVE\n}\n\nenum statusMessage {\n  PENDING\n  SENT\n  FAILED\n  SCHEDULED\n}\n\nmodel Origin {\n  id        String    @id @default(cuid())\n  name      String\n  status    Status    @default(ACTIVE)\n  createdAt DateTime  @default(now())\n  key       String    @unique\n  messages  Message[]\n}\n\nmodel Message {\n  id            String        @id @default(cuid())\n  text          String\n  type          typeMessage\n  webhook       String?\n  webhookSent   Boolean       @default(false)\n  webhookSentAt DateTime?\n  createdAt     DateTime      @default(now())\n  phone         String\n  origin        Origin?       @relation(fields: [originId], references: [id])\n  originId      String?\n  status        statusMessage @default(PENDING)\n  forAt         DateTime      @default(now())\n}\n"
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Origin\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"Status\"},{\"name\":\"webhook\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"key\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Messages\",\"kind\":\"object\",\"type\":\"Message\",\"relationName\":\"MessageToOrigin\"}],\"dbName\":null},\"Message\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"text\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"typeMessage\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"origin\",\"kind\":\"object\",\"type\":\"Origin\",\"relationName\":\"MessageToOrigin\"},{\"name\":\"originId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"statusMessage\"},{\"name\":\"forAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Origin\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"Status\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"key\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"messages\",\"kind\":\"object\",\"type\":\"Message\",\"relationName\":\"MessageToOrigin\"}],\"dbName\":null},\"Message\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"text\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"typeMessage\"},{\"name\":\"webhook\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"webhookSent\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"webhookSentAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"origin\",\"kind\":\"object\",\"type\":\"Origin\",\"relationName\":\"MessageToOrigin\"},{\"name\":\"originId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"statusMessage\"},{\"name\":\"forAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.compilerWasm = {
       getRuntime: async () => require('./query_compiler_bg.js'),

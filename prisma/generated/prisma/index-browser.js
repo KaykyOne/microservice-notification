@@ -121,7 +121,6 @@ exports.Prisma.OriginScalarFieldEnum = {
   id: 'id',
   name: 'name',
   status: 'status',
-  webhook: 'webhook',
   createdAt: 'createdAt',
   key: 'key'
 };
@@ -130,6 +129,9 @@ exports.Prisma.MessageScalarFieldEnum = {
   id: 'id',
   text: 'text',
   type: 'type',
+  webhook: 'webhook',
+  webhookSent: 'webhookSent',
+  webhookSentAt: 'webhookSentAt',
   createdAt: 'createdAt',
   phone: 'phone',
   originId: 'originId',

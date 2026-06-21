@@ -16,7 +16,7 @@ enum typeMessage {
   SMS
 }
 
-enum Status{
+enum Status {
   ACTIVE
   INACTIVE
 }
@@ -28,24 +28,26 @@ enum statusMessage {
   SCHEDULED
 }
 
-model Origin{
-  id        String   @id @default(cuid())
+model Origin {
+  id        String    @id @default(cuid())
   name      String
-  status    Status   @default(ACTIVE)
-  webhook   String
-  createdAt DateTime @default(now())
-  key       String   @unique
+  status    Status    @default(ACTIVE)
+  createdAt DateTime  @default(now())
+  key       String    @unique
   messages  Message[]
 }
 
 model Message {
-  id        String   @id @default(cuid())
-  text      String
-  type      typeMessage 
-  createdAt DateTime @default(now())
-  phone     String
-  origin    Origin? @relation(fields: [originId], references: [id])
-  originId  String?
-  status    statusMessage @default(PENDING)
-  forAt     DateTime @default(now())
+  id            String        @id @default(cuid())
+  text          String
+  type          typeMessage
+  webhook       String?
+  webhookSent   Boolean       @default(false)
+  webhookSentAt DateTime?
+  createdAt     DateTime      @default(now())
+  phone         String
+  origin        Origin?       @relation(fields: [originId], references: [id])
+  originId      String?
+  status        statusMessage @default(PENDING)
+  forAt         DateTime      @default(now())
 }

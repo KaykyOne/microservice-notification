@@ -1,7 +1,7 @@
-import { prismaManager } from "../../prisma/prisma.js";
-import { logger } from '../logs/logger.js'
-import { whatsapp } from "../infra/index.js";
-import { tempoHumano, iniciadorAleatorio } from "../common/humanization.js";
+import { prismaManager } from "../../../prisma/prisma.js";
+import { logger } from "../../../logs/logger.js";
+import { whatsapp } from "../../infra/index.js";
+import { tempoHumano, iniciadorAleatorio } from "../../common/humanization.js";
 import { send } from "./email.service.js";
 
 const { startBot, enviarMensagem, state, destruirSessao, getBotStatus } = whatsapp;

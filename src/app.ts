@@ -6,7 +6,7 @@ import compression from "compression";
 import path from "path";
 const dashboardFilePath = path.resolve(process.cwd(), "src/views/html/index.html");
 const dashboardAssetsPath = path.resolve(process.cwd(), "src/views");
-import routes from "./routes/routes.js";
+import routes from "./http/routes/routes.js";
 
 const app = express();
 

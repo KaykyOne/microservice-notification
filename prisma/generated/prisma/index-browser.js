@@ -117,22 +117,24 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.OriginScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  status: 'status',
+  webhook: 'webhook',
+  createdAt: 'createdAt',
+  key: 'key'
+};
+
 exports.Prisma.MessageScalarFieldEnum = {
   id: 'id',
   text: 'text',
   type: 'type',
   createdAt: 'createdAt',
   phone: 'phone',
-  autor: 'autor',
+  originId: 'originId',
   status: 'status',
   forAt: 'forAt'
-};
-
-exports.Prisma.KeysScalarFieldEnum = {
-  id: 'id',
-  value: 'value',
-  createdAt: 'createdAt',
-  valid: 'valid'
 };
 
 exports.Prisma.SortOrder = {
@@ -144,6 +146,11 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.Status = exports.$Enums.Status = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+};
+
 exports.typeMessage = exports.$Enums.typeMessage = {
   EMAIL: 'EMAIL',
   WHATSAPP: 'WHATSAPP',
@@ -158,8 +165,8 @@ exports.statusMessage = exports.$Enums.statusMessage = {
 };
 
 exports.Prisma.ModelName = {
-  Message: 'Message',
-  Keys: 'Keys'
+  Origin: 'Origin',
+  Message: 'Message'
 };
 
 /**

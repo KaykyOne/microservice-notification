@@ -1,7 +1,5 @@
-{"level":50,"time":1781113153185,"pid":19704,"hostname":"PCdoKayky","msg":"[Baileys] Reconexao encerrada: loggedOut. statusCode=401 reason=loggedOut:Connection Failure"}
-{"level":50,"time":1781113176971,"pid":18404,"hostname":"PCdoKayky","msg":"Erro ao montar matriz do QR Code: bad rs block @ typeNumber:1/errorCorrectLevel:L"}
-{"level":30,"time":1781113248198,"pid":11288,"hostname":"PCdoKayky","msg":"Recebida requisicao para enviar mensagem para 5517997419297"}
-{"level":30,"time":1781113248217,"pid":11288,"hostname":"PCdoKayky","msg":"Mensagem enviada para 5517997419297@s.whatsapp.net com sucesso."}
-{"level":30,"time":1781113254607,"pid":11288,"hostname":"PCdoKayky","msg":"Mensagem enviada para 5517997419297@s.whatsapp.net"}
-{"level":30,"time":1781113258148,"pid":11288,"hostname":"PCdoKayky","msg":"Mensagem enviada para 5517997419297@s.whatsapp.net"}
-{"level":30,"time":1781113258162,"pid":11288,"hostname":"PCdoKayky","msg":"Mensagem ID cmq8cu9xq0000pkpossy6gkul enviada com sucesso para 5517997419297@s.whatsapp.net"}
+{"level":30,"time":1781899401032,"pid":19408,"hostname":"PCdoKayky","msg":"Recebida requisicao para enviar mensagem para 5517997419297"}
+{"level":30,"time":1781899401050,"pid":19408,"hostname":"PCdoKayky","msg":"Mensagem enviada para 5517997419297@s.whatsapp.net com sucesso."}
+{"level":30,"time":1781899408044,"pid":19408,"hostname":"PCdoKayky","msg":"Mensagem enviada para 5517997419297@s.whatsapp.net"}
+{"level":30,"time":1781899411573,"pid":19408,"hostname":"PCdoKayky","msg":"Mensagem enviada para 5517997419297@s.whatsapp.net"}
+{"level":30,"time":1781899411586,"pid":19408,"hostname":"PCdoKayky","msg":"Mensagem ID cmqlcw9ce0000z4poos8otx4g enviada com sucesso para 5517997419297@s.whatsapp.net"}

@@ -16,11 +16,26 @@ enum typeMessage {
   SMS
 }
 
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
 enum statusMessage {
   PENDING
   SENT
   FAILED
   SCHEDULED
+}
+
+model Origin {
+  id        String    @id @default(cuid())
+  name      String
+  status    Status    @default(ACTIVE)
+  webhook   String
+  createdAt DateTime  @default(now())
+  key       String    @unique
+  Messages  Message[]
 }
 
 model Message {
@@ -29,14 +44,8 @@ model Message {
   type      typeMessage
   createdAt DateTime      @default(now())
   phone     String
-  autor     String?
+  origin    Origin?       @relation(fields: [originId], references: [id])
+  originId  String?
   status    statusMessage @default(PENDING)
   forAt     DateTime      @default(now())
-}
-
-model Keys {
-  id        String   @id @default(cuid())
-  value     String
-  createdAt DateTime @default(now())
-  valid     Boolean  @default(true)
 }

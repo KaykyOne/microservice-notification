@@ -3,7 +3,7 @@ import qrCodeGerator from 'qrcode-terminal';
 import pino from 'pino';
 import * as fs from 'fs/promises';
 import { createRequire } from 'module';
-import { logger } from '../../logs/logger.js';
+import { logger } from '../../../logs/logger.js';
 // import { send } from '../../services/email.service.ts';
 
 const require = createRequire(import.meta.url);

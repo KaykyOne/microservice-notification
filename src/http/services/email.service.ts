@@ -1,8 +1,8 @@
-import { email } from "../infra/index.js";
+import { email } from "../../infra/index.js";
 import React from "react";
 import { render } from "@react-email/render";
-import BaseEmailTemplate from "../infra/email/templates/baseEmailTemplate.js";
-import env from "../env.js";
+import BaseEmailTemplate from "../../infra/email/templates/baseEmailTemplate.js";
+import env from "../../env.js";
 
 const remetente = env.EMAIL_REMETENTE;
 const dev = env.EMAIL_WARNING === "true";

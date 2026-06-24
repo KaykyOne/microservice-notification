@@ -2,18 +2,13 @@ import { prismaManager } from "../../../prisma/prisma.js";
 import { logger } from "../../../logs/logger.js";
 import { whatsapp } from "../../infra/index.js";
 import { tempoHumano, iniciadorAleatorio } from "../../common/humanization.js";
+import { formatNumber, clearNumber } from "../../common/number.js";
 import { send } from "./email.service.js";
 
 const { startBot, enviarMensagem, state, destruirSessao, getBotStatus } = whatsapp;
 const emailWarning = process.env.EMAIL_WARNING;
 
 let enviando = false;
-
-function formatNumber(phone) {
-    let phoneFormated = phone;
-    phoneFormated = phone.includes('@s.whatsapp.net') ? phone : `${phone}@s.whatsapp.net`;
-    return phoneFormated.startsWith('55') ? phoneFormated : `55${phoneFormated}`;
-};
 
 async function sendMessageService({ text, phone, forAt, webhook }) {
     const numeroFormatado = formatNumber(phone);
@@ -189,6 +184,8 @@ async function sendToWebhook(message, number) {
             webhook: true
         }
     });
+
+    message.number = clearNumber(number);
 
     console.log(`Encontrados ${webhooksForNumber.length} webhooks para o número ${number}.`);
 

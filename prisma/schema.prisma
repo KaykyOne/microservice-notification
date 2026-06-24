@@ -8,6 +8,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 enum typeMessage {
@@ -28,15 +29,6 @@ enum statusMessage {
   SCHEDULED
 }
 
-model Origin {
-  id        String    @id @default(cuid())
-  name      String
-  status    Status    @default(ACTIVE)
-  createdAt DateTime  @default(now())
-  key       String    @unique
-  messages  Message[]
-}
-
 model Message {
   id            String        @id @default(cuid())
   text          String
@@ -46,8 +38,6 @@ model Message {
   webhookSentAt DateTime?
   createdAt     DateTime      @default(now())
   phone         String
-  origin        Origin?       @relation(fields: [originId], references: [id])
-  originId      String?
   status        statusMessage @default(PENDING)
   forAt         DateTime      @default(now())
 }

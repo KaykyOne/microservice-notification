@@ -5,6 +5,7 @@ import * as fs from 'fs/promises';
 import { createRequire } from 'module';
 import { logger } from '../../../logs/logger.js';
 import { sendToWebhook } from '../../http/services/whatsapp.service.js';
+import { normalizeWhatsAppNumber } from '../../common/number.js';
 
 const require = createRequire(import.meta.url);
 const QRCode = require('qrcode-terminal/vendor/QRCode');
@@ -292,12 +293,14 @@ function registerSocketEvents(currentSock, currentGeneration) {
 
             console.log(`Mensagem recebida de ${from}: ${text}`);
 
+            const body = {
+                from,
+                text,
+                id: message.key.id,
+            };
+
             await sendToWebhook(
-                {
-                    from,
-                    text,
-                    id: message.key.id,
-                },
+                body,
                 from
             );
         }
@@ -335,19 +338,6 @@ async function startBot(tentativasReinicioParam = 0) {
     } finally {
         startPromise = null;
     }
-}
-
-async function normalizeWhatsAppNumber(phone) {
-    let clean = phone.replace(/\D/g, '');
-    if (!clean.startsWith('55')) clean = '55' + clean;
-
-    const with9 = clean.length === 12
-        ? clean.slice(0, 4) + '9' + clean.slice(4)
-        : clean;
-
-    const without9 = with9.replace(/^(\d{4})9/, '$1');
-
-    return { com9: with9, sem9: without9 };
 }
 
 async function enviarMensagem(texto, numero) {

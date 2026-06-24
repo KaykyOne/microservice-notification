@@ -18,13 +18,13 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "prisma": "^7.2.0",
+    "prisma": "^6.19.3",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.2.0",
-    "@prisma/client": "^7.2.0",
+    "@prisma/client": "^6.19.3",
     "@react-email/components": "^1.0.11",
     "@react-email/render": "^2.0.5",
     "@whiskeysockets/baileys": "^7.0.0-rc13",

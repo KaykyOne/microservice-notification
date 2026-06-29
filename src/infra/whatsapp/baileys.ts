@@ -1,4 +1,4 @@
-import makeWASocket, { useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } from '@whiskeysockets/baileys';
+import makeWASocket, { useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, downloadMediaMessage } from '@whiskeysockets/baileys';
 import qrCodeGerator from 'qrcode-terminal';
 import pino from 'pino';
 import * as fs from 'fs/promises';
@@ -6,6 +6,7 @@ import { createRequire } from 'module';
 import { logger } from '../../../logs/logger.js';
 import { sendToWebhook } from '../../http/services/whatsapp.service.js';
 import { normalizeWhatsAppNumber } from '../../common/number.js';
+import { transcribeAudioBuffer } from '../../../tools/audio-transcriber.mjs';
 
 const require = createRequire(import.meta.url);
 const QRCode = require('qrcode-terminal/vendor/QRCode');
@@ -282,10 +283,47 @@ function registerSocketEvents(currentSock, currentGeneration) {
                 message.key.remoteJidAlt ||
                 message.key.remoteJid;
 
-            const text =
-                message.message?.conversation ||
-                message.message?.extendedTextMessage?.text ||
-                '';
+            //Verificar tipo da mensagem, se for texto, pega o texto, se for audio, faz a transcrição e pega o texto, se for outro tipo, ignora
+
+            let text = '';
+
+
+            if (message.message?.audioMessage) {
+                console.log(`Mensagem de audio recebida de ${from}, iniciando transcrição...`);
+                try {
+                    const audioBuffer = await downloadMediaMessage(
+                        message,
+                        'buffer',
+                        {},
+                        {
+                            reuploadRequest: currentSock.updateMediaMessage,
+                            logger: pino({ level: 'error' })
+                        }
+                    );
+
+                    text = await transcribeAudioBuffer(audioBuffer, {
+                        fileName: `whatsapp-${message.key.id || Date.now()}.ogg`
+                    });
+
+                    if (text) {
+                        console.log(`Transcrição concluída: ${text}`);
+                    } else {
+                        console.log(`Falha na transcrição do áudio de ${from}`);
+                    }
+                } catch (error) {
+                    const messageText = error instanceof Error ? error.message : String(error);
+                    logger.error(`Erro ao transcrever audio de ${from}: ${messageText}`);
+                    console.log(`Falha na transcrição do áudio de ${from}: ${messageText}`);
+                }
+            } else if (message.message?.conversation || message.message?.extendedTextMessage?.text) {
+                text =
+                    message.message?.conversation ||
+                    message.message?.extendedTextMessage?.text ||
+                    '';
+            } else {
+                console.log(`Mensagem recebida de ${from} não é texto nem áudio, ignorando.`);
+                continue;
+            }
 
             if (!from || !text) {
                 continue;

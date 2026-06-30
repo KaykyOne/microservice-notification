@@ -1,3 +1,19 @@
+import z from 'zod';
+
+const EnvSchema = z.object({
+    DATABASE_URL: z.string().url(),
+    JWT_SECRET: z.string().min(32),
+    EMAIL_HOST: z.string().optional(),
+    EMAIL_PORT: z.string().optional(),
+    EMAIL_USER: z.string().optional(),
+    EMAIL_WARNING: z.string().optional(),
+    EMAIL_PASS: z.string().optional(),
+    EMAIL_REMETENTE: z.string().optional(),
+    ROOT_USER: z.string().optional(),
+    ROOT_PASSWORD: z.string().optional(),
+    ROOT_EMAIL: z.string().optional(),
+})
+
 
 const env = {
     DATABASE_URL: process.env.DATABASE_URL,
@@ -15,4 +31,11 @@ const env = {
     ROOT_EMAIL: process.env.ROOT_EMAIL,
 }
 
-export default env;
+const parsedEnv = EnvSchema.safeParse(env);
+
+if (!parsedEnv.success) {
+    console.error("Erro ao validar variáveis de ambiente:", parsedEnv.error.format());
+    process.exit(1);
+}
+
+export default parsedEnv.data;

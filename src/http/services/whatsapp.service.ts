@@ -1,0 +1,232 @@
+import { prismaManager } from "../../../prisma/prisma.js";
+import { logger } from "../../../logs/logger.js";
+import { whatsapp } from "../../infra/index.js";
+import { tempoHumano, iniciadorAleatorio } from "../../common/humanization.js";
+import { formatNumber, clearNumber } from "../../common/number.js";
+import { send } from "./email.service.js";
+
+const { startBot, enviarMensagem, state, destruirSessao, getBotStatus } = whatsapp;
+const emailWarning = process.env.EMAIL_WARNING;
+
+let enviando = false;
+
+async function sendMessageService({ text, phone, forAt, webhook }) {
+    const numeroFormatado = formatNumber(phone);
+    const dataFormatada = forAt ? new Date(forAt) : null;
+
+    try {
+
+        if (dataFormatada) {
+            await prismaManager.message.create({
+                data: {
+                    text,
+                    phone: numeroFormatado,
+                    status: 'SCHEDULED',
+                    webhook: webhook || null,
+                    type: 'WHATSAPP',
+                    forAt: dataFormatada
+                }
+            });
+            logger.info(`Mensagem agendada para ${numeroFormatado} com sucesso.`);
+
+        } else {
+            await prismaManager.message.create({
+                data: {
+                    text,
+                    phone: numeroFormatado,
+                    status: 'PENDING',
+                    webhook: webhook || null,
+                    type: 'WHATSAPP'
+                }
+            });
+            logger.info(`Mensagem enviada para ${numeroFormatado} com sucesso.`);
+        }
+
+
+    } catch (error) {
+        console.error('Erro ao enviar mensagem:', error);
+        logger.error(`Erro ao enviar mensagem para ${phone}: ${error.message}`);
+        throw new Error('Falha ao enviar mensagem');
+    }
+};
+
+async function listMessagesService() {
+    return prismaManager.message.findMany({
+        where: {
+            type: 'WHATSAPP'
+        },
+        orderBy: [
+            { createdAt: 'desc' }
+        ]
+    });
+}
+
+async function deleteMessageService(id) {
+    await prismaManager.message.delete({
+        where: { id }
+    });
+}
+
+async function updateStatus(id, status) {
+    await prismaManager.message.update({
+        where: { id },
+        data: { status }
+    });
+};
+
+async function seeBD() {
+    // console.log(enviando);
+    // console.log(state.iniciado);
+
+    if (enviando) return;
+    if (!state.iniciado) return;
+    console.log('Verificando mensagens pendentes...');
+    // console.log('Verificando mensagens pendentes...');
+    try {
+        enviando = true;
+        const messagesPendentes = await prismaManager.message.findMany({
+            where: {
+                status: 'PENDING'
+            }
+        });
+        // console.log(messagesPendentes);
+
+        const messagesAgendadas = await prismaManager.message.findMany({
+            where: {
+                status: 'SCHEDULED',
+                forAt: { lte: new Date() }
+            },
+            take: 5,
+            orderBy: {
+                forAt: 'asc'
+            }
+        });
+
+        const messages = [...messagesPendentes, ...messagesAgendadas];
+        // console.log(messages);
+
+        if (messages.length === 0) {
+            enviando = false;
+            return;
+        }
+        console.log(`Encontradas ${messages.length} mensagens pendentes.`);
+        for (const message of messages) {
+            await enviarMensagem(iniciadorAleatorio(), message.phone);
+            await new Promise(r => setTimeout(r, 2000)); // Espera 2 segundos antes de atualizar o status para 'SENT'
+            await enviarMensagem(`${message.text}`, message.phone);
+            await updateStatus(message.id, 'SENT');
+            logger.info(`Mensagem ID ${message.id} enviada com sucesso para ${message.phone}`);
+
+            const delay = tempoHumano();
+            await new Promise(r => setTimeout(r, delay));
+        }
+    } catch (error) {
+        logger.error(`Erro ao processar mensagens pendentes: ${error.message}`);
+    } finally {
+        enviando = false;
+    }
+};
+
+async function clearBD() {
+    await prismaManager.message.deleteMany({
+        where: {
+            status: 'PENDING'
+        }
+    });
+};
+
+async function start() {
+    // await send('Iniciando Bot', emailWarning);
+    await startBot();
+    console.log('Bot do WhatsApp iniciado.');
+    return getBotStatus();
+};
+
+async function deleteScheduledMessagesForPhone(phone) {
+    await prismaManager.message.deleteMany({
+        where: {
+            status: 'SCHEDULED',
+            phone: phone,
+            forAt: { lt: new Date() }
+        }
+    });
+};
+
+async function stopWhatsappBotService() {
+    if (emailWarning) {
+        await send('Parando Bot', emailWarning);
+    }
+    await destruirSessao();
+    console.log('Bot do WhatsApp parado.');
+    return getBotStatus();
+};
+
+async function connectWhatsappBotService() {
+    await startBot();
+    return getBotStatus();
+}
+
+function getWhatsappBotStatusService() {
+    return getBotStatus();
+}
+
+async function sendToWebhook(message, number) {
+    console.log('Verificando webhooks para o número:', number);
+
+    const webhooksForNumber = await prismaManager.message.findMany({
+        where: {
+            phone: number,
+            webhookSent: false,
+            webhook: { not: null }
+        },
+        select: {
+            id: true,
+            webhook: true
+        }
+    });
+
+    message.number = clearNumber(number);
+
+    console.log(`Encontrados ${webhooksForNumber.length} webhooks para o número ${number}.`);
+
+    for (const webhook of webhooksForNumber) {
+        if (!webhook.webhook) continue;
+        try {
+            await fetch(webhook.webhook, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(message)
+            });
+
+            await prismaManager.message.update({
+                where: {
+                    id: webhook.id
+                },
+                data: {
+                    webhookSent: true,
+                    webhookSentAt: new Date()
+                }
+            });
+        } catch (error) {
+            logger.error(`Erro ao enviar mensagem para webhook ${webhook.webhook}: ${error.message}`);
+        }
+    }
+
+}
+
+setInterval(seeBD, 10000);
+
+export {
+    sendMessageService,
+    listMessagesService,
+    deleteMessageService,
+    clearBD,
+    deleteScheduledMessagesForPhone,
+    start,
+    stopWhatsappBotService,
+    connectWhatsappBotService,
+    getWhatsappBotStatusService,
+    sendToWebhook
+};

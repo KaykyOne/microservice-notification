@@ -7,24 +7,22 @@
     "dev": "cross-env NODE_ENV=development tsx server.ts",
     "start": "cross-env NODE_ENV=production node dist/server.js",
     "whatsapp:connect": "npm run build && node dist/src/scripts/connect-whatsapp.js",
-    "whatsapp:delete-session": "npm run build && node dist/src/scripts/delete-whatsapp-session.js",
-    "service:start": "npm run build && node dist/src/scripts/start-microservice.js",
-    "service:stop": "npm run build && node dist/src/scripts/stop-microservice.js",
-    "pm2:notify": "npm run build && node dist/src/scripts/start-pm2-notify.js"
+    "whatsapp:delete-session": "npm run build && node dist/src/scripts/delete-whatsapp-session.js"
   },
   "author": "",
   "type": "module",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "prisma": "^7.2.0",
+    "prisma": "^6.19.3",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.2.0",
-    "@prisma/client": "^7.2.0",
+    "@prisma/client": "^6.19.3",
     "@react-email/components": "^1.0.11",
+    "openai": "^6.16.0",
     "@react-email/render": "^2.0.5",
     "@whiskeysockets/baileys": "^7.0.0-rc13",
     "compression": "^1.8.1",
@@ -34,11 +32,11 @@
     "express": "^5.2.1",
     "helmet": "^8.1.0",
     "inquirer": "^13.4.0",
-    "nodemailer": "^7.0.12",
+    "nodemailer": "^9.0.1",
     "pino": "^10.3.1",
     "qrcode-terminal": "^0.12.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "whatsapp-web.js": "^1.34.6"
+    "zod": "^4.4.3"
   }
 }

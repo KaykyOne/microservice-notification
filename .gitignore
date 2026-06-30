@@ -12,6 +12,6 @@ auth_info
 /sessions
 /.wwebjs_cache
 
-logs*
+logs.log
 
 /dist

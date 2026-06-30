@@ -8,12 +8,18 @@ generator client {
 
 datasource db {
   provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 enum typeMessage {
   EMAIL
   WHATSAPP
   SMS
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
 }
 
 enum statusMessage {
@@ -24,19 +30,14 @@ enum statusMessage {
 }
 
 model Message {
-  id        String   @id @default(cuid())
-  text      String
-  type      typeMessage 
-  createdAt DateTime @default(now())
-  phone     String
-  autor     String?
-  status    statusMessage @default(PENDING)
-  forAt     DateTime @default(now())
-}
-
-model Keys {
-  id        String   @id @default(cuid())
-  value     String
-  createdAt DateTime @default(now())
-  valid    Boolean  @default(true)
+  id            String        @id @default(cuid())
+  text          String
+  type          typeMessage
+  webhook       String?
+  webhookSent   Boolean       @default(false)
+  webhookSentAt DateTime?
+  createdAt     DateTime      @default(now())
+  phone         String
+  status        statusMessage @default(PENDING)
+  forAt         DateTime      @default(now())
 }

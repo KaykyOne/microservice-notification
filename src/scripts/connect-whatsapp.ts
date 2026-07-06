@@ -1,20 +1,21 @@
-import { startBot, getBotStatus, destruirSessao } from "../infra/whatsapp/baileys.js";
+//* Infra Imports
+import { whatsapp } from "../infra/index.js";
 
 async function main() {
-    await startBot();
+    await whatsapp.startBot();
     console.log("Fluxo de conexao do WhatsApp iniciado.");
     console.log("Escaneie o QR Code no terminal, se ele aparecer.");
-    console.log("Status atual:", getBotStatus());
+    console.log("Status atual:", whatsapp.getBotStatus());
     console.log("Pressione Ctrl+C para encerrar este script.");
 }
 
 process.on("SIGINT", async () => {
-    await destruirSessao();
+    await whatsapp.destruirSessao();
     process.exit(0);
 });
 
 process.on("SIGTERM", async () => {
-    await destruirSessao();
+    await whatsapp.destruirSessao();
     process.exit(0);
 });
 

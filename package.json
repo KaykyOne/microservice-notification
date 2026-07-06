@@ -1,13 +1,15 @@
 {
   "name": "service-mensagens",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc && node tools/copy-prisma-generated.mjs",
+    "build": "tsc && node ./src/utils/copy-prisma-generated.mjs",
     "dev": "cross-env NODE_ENV=development tsx server.ts",
     "start": "cross-env NODE_ENV=production node dist/server.js",
     "whatsapp:connect": "npm run build && node dist/src/scripts/connect-whatsapp.js",
-    "whatsapp:delete-session": "npm run build && node dist/src/scripts/delete-whatsapp-session.js"
+    "whatsapp:delete-session": "npm run build && node dist/src/scripts/delete-whatsapp-session.js",
+    "clear-messages": "npm run build && node dist/src/scripts/clear-messages.js",
+    "alter-whatsapp-status": "node dist/src/scripts/config-start-whatsapp.js"
   },
   "author": "",
   "type": "module",

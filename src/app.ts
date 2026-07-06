@@ -1,8 +1,13 @@
+//* Config Imports
 import "dotenv/config";
-import express from "express";
+
+//* Package Imports
+import compression from "compression";
 import cors from "cors";
 import helmet from "helmet";
-import compression from "compression";
+import express from "express";
+
+//* Route Imports
 import routes from "./http/routes/routes.js";
 
 const PORT = process.env.PORT || 3012;

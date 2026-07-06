@@ -1,8 +1,11 @@
+//* Node Imports
+import { randomUUID } from "node:crypto";
 import fs from "node:fs";
 import { promises as fsPromises } from "node:fs";
-import { randomUUID } from "node:crypto";
 import os from "node:os";
 import path from "node:path";
+
+//* Package Imports
 import OpenAI from "openai";
 
 const DEFAULT_MODEL = "gpt-4o-transcribe";

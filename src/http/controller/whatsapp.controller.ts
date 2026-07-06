@@ -8,12 +8,16 @@ import {
 import { logger } from "../../utils/logger.js";
 
 //* Schema Imports
-import { Message } from "../../schemas/message.js";
+import { messageSchema } from "../../schemas/message.js";
 
-async function sendMessage(req, res) {
+//* Type Imports
+import type { Request, Response } from "express";
+import type { Message } from "../../schemas/message.js";
+
+async function sendMessage(req: Request, res: Response) {
     const message: Message = req.body;
 
-    if (!message.text || !message.phone) {
+    if (!messageSchema.safeParse(message).success) {
         return res.status(400).json({ message: "As propriedades text ou phone nao foram encontradas!" });
     }
 
@@ -22,10 +26,12 @@ async function sendMessage(req, res) {
         await sendMessageService(message);
         return res.status(200).json({ message: "Mensagem enviada com sucesso!" });
     } catch (error) {
-        return res.status(500).json({
-            message: "Erro ao enviar mensagem",
-            error: error.message
-        });
+        if (error instanceof Error) {
+            return res.status(500).json({
+                message: "Erro ao enviar mensagem",
+                error: error.message ? error.message : "Erro desconhecido",
+            });
+        }
     }
 }
 

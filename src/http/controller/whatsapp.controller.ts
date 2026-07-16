@@ -14,11 +14,15 @@ import { messageSchema } from "../../schemas/message.js";
 import type { Request, Response } from "express";
 import type { Message } from "../../schemas/message.js";
 
+const messageSchemaReceived = messageSchema.omit({ id: true, createdAt: true, webhookSent: true, webhookSentAt: true });
+
 async function sendMessage(req: Request, res: Response) {
     const message: Message = req.body;
+    message.type = "WHATSAPP";
+    const parse = messageSchemaReceived.safeParse(message);
 
-    if (!messageSchema.safeParse(message).success) {
-        return res.status(400).json({ message: "As propriedades text ou phone nao foram encontradas!" });
+    if (!parse.success) {
+        return res.status(400).json({ message: parse.error });
     }
 
     logger.info(`Recebida requisicao para enviar mensagem para ${message.phone}`);

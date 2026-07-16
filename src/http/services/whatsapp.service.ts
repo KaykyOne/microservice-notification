@@ -1,28 +1,37 @@
+//* Prisma Imports
 import { prismaManager } from "../../../prisma/prisma.js";
-import { logger } from "../../../logs/logger.js";
+
+//* Infra Imports
 import { whatsapp } from "../../infra/index.js";
+
+//* Common Imports
 import { tempoHumano, iniciadorAleatorio } from "../../common/humanization.js";
 import { formatNumber, clearNumber } from "../../common/number.js";
-import { send } from "./email.service.js";
 
-const { startBot, enviarMensagem, state, destruirSessao, getBotStatus } = whatsapp;
-const emailWarning = process.env.EMAIL_WARNING;
+//* Util Imports
+import { logger } from "../../utils/logger.js";
+
+//* Schema Imports
+import { Message } from "../../schemas/message.js";
+
+const { startBot, enviarMensagem, state, getBotStatus } = whatsapp;
 
 let enviando = false;
 
-async function sendMessageService({ text, phone, forAt, webhook }) {
-    const numeroFormatado = formatNumber(phone);
-    const dataFormatada = forAt ? new Date(forAt) : null;
+async function sendMessageService(message: Message) {
+    
+    const numeroFormatado = formatNumber(message.phone);
+    const dataFormatada = message.forAt ? new Date(message.forAt) : null;
 
     try {
 
         if (dataFormatada) {
             await prismaManager.message.create({
                 data: {
-                    text,
+                    text: message.text,
                     phone: numeroFormatado,
                     status: 'SCHEDULED',
-                    webhook: webhook || null,
+                    webhook: message.webhook || null,
                     type: 'WHATSAPP',
                     forAt: dataFormatada
                 }
@@ -32,10 +41,10 @@ async function sendMessageService({ text, phone, forAt, webhook }) {
         } else {
             await prismaManager.message.create({
                 data: {
-                    text,
+                    text: message.text,
                     phone: numeroFormatado,
                     status: 'PENDING',
-                    webhook: webhook || null,
+                    webhook: message.webhook || null,
                     type: 'WHATSAPP'
                 }
             });
@@ -45,27 +54,10 @@ async function sendMessageService({ text, phone, forAt, webhook }) {
 
     } catch (error) {
         console.error('Erro ao enviar mensagem:', error);
-        logger.error(`Erro ao enviar mensagem para ${phone}: ${error.message}`);
+        logger.error(`Erro ao enviar mensagem para ${message.phone}: ${error.message}`);
         throw new Error('Falha ao enviar mensagem');
     }
 };
-
-async function listMessagesService() {
-    return prismaManager.message.findMany({
-        where: {
-            type: 'WHATSAPP'
-        },
-        orderBy: [
-            { createdAt: 'desc' }
-        ]
-    });
-}
-
-async function deleteMessageService(id) {
-    await prismaManager.message.delete({
-        where: { id }
-    });
-}
 
 async function updateStatus(id, status) {
     await prismaManager.message.update({
@@ -127,48 +119,11 @@ async function seeBD() {
     }
 };
 
-async function clearBD() {
-    await prismaManager.message.deleteMany({
-        where: {
-            status: 'PENDING'
-        }
-    });
-};
-
 async function start() {
-    // await send('Iniciando Bot', emailWarning);
     await startBot();
     console.log('Bot do WhatsApp iniciado.');
     return getBotStatus();
 };
-
-async function deleteScheduledMessagesForPhone(phone) {
-    await prismaManager.message.deleteMany({
-        where: {
-            status: 'SCHEDULED',
-            phone: phone,
-            forAt: { lt: new Date() }
-        }
-    });
-};
-
-async function stopWhatsappBotService() {
-    if (emailWarning) {
-        await send('Parando Bot', emailWarning);
-    }
-    await destruirSessao();
-    console.log('Bot do WhatsApp parado.');
-    return getBotStatus();
-};
-
-async function connectWhatsappBotService() {
-    await startBot();
-    return getBotStatus();
-}
-
-function getWhatsappBotStatusService() {
-    return getBotStatus();
-}
 
 async function sendToWebhook(message, number) {
     console.log('Verificando webhooks para o número:', number);
@@ -220,13 +175,6 @@ setInterval(seeBD, 10000);
 
 export {
     sendMessageService,
-    listMessagesService,
-    deleteMessageService,
-    clearBD,
-    deleteScheduledMessagesForPhone,
     start,
-    stopWhatsappBotService,
-    connectWhatsappBotService,
-    getWhatsappBotStatusService,
     sendToWebhook
 };

@@ -1,12 +1,23 @@
+//* Package Imports
 import makeWASocket, { useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, downloadMediaMessage } from '@whiskeysockets/baileys';
-import qrCodeGerator from 'qrcode-terminal';
 import pino from 'pino';
+import qrCodeGerator from 'qrcode-terminal';
+
+//* Node Imports
 import * as fs from 'fs/promises';
 import { createRequire } from 'module';
-import { logger } from '../../../logs/logger.js';
+
+//* Service Imports
 import { sendToWebhook } from '../../http/services/whatsapp.service.js';
+
+//* Common Imports
 import { normalizeWhatsAppNumber } from '../../common/number.js';
-import { transcribeAudioBuffer } from '../../../tools/audio-transcriber.mjs';
+
+//* Util Imports
+import { logger } from '../../utils/logger.js';
+
+//* Tool Imports
+import { transcribeAudioBuffer } from '../../utils/audio-transcriber.mjs';
 
 const require = createRequire(import.meta.url);
 const QRCode = require('qrcode-terminal/vendor/QRCode');
@@ -274,8 +285,10 @@ function registerSocketEvents(currentSock, currentGeneration) {
     });
 
     currentSock.ev.on('messages.upsert', async ({ messages }) => {
+        console.log(`[Baileys] Mensagens recebidas: ${messages.length}`);
         for (const message of messages) {
             if (message.key.fromMe) {
+                console.log(`[Baileys] Ignorando mensagem enviada por mim mesmo. messageId=${message.key.id}`);
                 continue;
             }
 
@@ -441,4 +454,6 @@ async function destruirSessao() {
     }
 }
 
-export { startBot, enviarMensagem, normalizeWhatsAppNumber, destruirSessao, TEMPO_ENTRE_MENSAGENS, state, getBotStatus };
+const baileys = { startBot, enviarMensagem, normalizeWhatsAppNumber, destruirSessao, TEMPO_ENTRE_MENSAGENS, state, getBotStatus };
+
+export default baileys;

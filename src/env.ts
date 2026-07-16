@@ -1,8 +1,9 @@
+//* Package Imports
 import z from 'zod';
 
 const EnvSchema = z.object({
     DATABASE_URL: z.string().url(),
-    JWT_SECRET: z.string().min(32),
+    SECRET_KEY: z.string().min(32),
     EMAIL_HOST: z.string().optional(),
     EMAIL_PORT: z.string().optional(),
     EMAIL_USER: z.string().optional(),
@@ -17,7 +18,7 @@ const EnvSchema = z.object({
 
 const env = {
     DATABASE_URL: process.env.DATABASE_URL,
-    JWT_SECRET: process.env.JWT_SECRET,
+    SECRET_KEY: process.env.SECRET_KEY,
 
     EMAIL_HOST: process.env.EMAIL_HOST,
     EMAIL_PORT: process.env.EMAIL_PORT,

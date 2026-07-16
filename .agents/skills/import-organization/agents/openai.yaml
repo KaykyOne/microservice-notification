@@ -1,0 +1,7 @@
+interface:
+  display_name: "Import Organization"
+  short_description: "Organiza imports por categorias do projeto"
+  default_prompt: "Use $import-organization para organizar imports por categoria nos arquivos do projeto."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,7 +1,8 @@
+//* Node Imports
+import { spawn, spawnSync } from "child_process";
 import { openSync } from "fs";
 import { mkdir, readFile, rm, writeFile } from "fs/promises";
 import path from "path";
-import { spawn, spawnSync } from "child_process";
 
 const RUNTIME_DIR = path.resolve(".runtime");
 

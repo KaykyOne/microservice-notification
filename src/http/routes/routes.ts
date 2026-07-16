@@ -1,11 +1,15 @@
+//* Package Imports
 import { Router } from "express";
+
+//* Route Imports
 import whatsappRoutes from "./whatsapp.route.js";
-import emailRoutes from "./email.route.js";
 
 const router = Router();
 
+// Whatsapp Routes
 router.use("/whatsapp", whatsappRoutes);
-router.use("/email", emailRoutes);
+
+// Health Check Routes
 router
   .get("/ping", (req, res) => {
     res.send("Pong");

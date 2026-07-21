@@ -1,6 +1,6 @@
 {
   "name": "service-mensagens",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "main": "dist/server.js",
   "scripts": {
     "test": "vitest",

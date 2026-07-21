@@ -3,7 +3,6 @@ dist
 # Keep environment variables out of version control
 .env
 data.db
-/generated/prisma
 auth_info
 
 /logs/app.log
